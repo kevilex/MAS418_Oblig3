@@ -376,3 +376,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# ROS build files
+ROS/build/
+ROS/install/
+ROS/log/

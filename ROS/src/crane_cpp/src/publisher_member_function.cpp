@@ -115,7 +115,8 @@ class WaveMaker{
   private:
     float time = 0.0;
 };
-
+//instantiating the wavemaker object
+WaveMaker waveMaker;
 
 
 auto adsDelivery(float* information){
@@ -178,8 +179,7 @@ private:
   size_t count_;
 };
 
-//instantiating the wavemaker object
-WaveMaker waveMaker;
+
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
