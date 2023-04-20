@@ -4,6 +4,8 @@
 #include <fstream>
 
 #include "sensor_msgs/msg/joint_state.hpp"
+#include "std_msgs/msg/float32_multi_array.hpp"
+
 #include "rclcpp/rclcpp.hpp"                                    
 
 #include <thread>
@@ -153,10 +155,25 @@ public:
     publisher_ = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", 200);
     timer_ = this->create_wall_timer(
       10ms, std::bind(&MinimalPublisher::timer_callback, this));
+
+    publisher2_ = this->create_publisher<std_msgs::msg::Float32MultiArray>("pressures", 200);
+    timer2_ = this->create_wall_timer(
+		10ms, std::bind(&MinimalPublisher::pressure_callback, this));
   }
 
 
 private:
+
+  void pressure_callback(){
+    float information[3] = {0.0, 0.0, 0.0};
+    adsDelivery(information);
+    pressure.data.resize(2);
+    pressure.data[0] = information[1];
+    pressure.data[1] = information[2];
+    publisher2_->publish(pressure);
+
+  }
+
   void timer_callback(){
     float information[3] = {0.0, 0.0, 0.0};
     adsDelivery(information);
@@ -175,7 +192,12 @@ private:
   
   
   rclcpp::TimerBase::SharedPtr timer_;
-  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publisher_;             
+  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr publisher_;
+
+  rclcpp::TimerBase::SharedPtr timer2_;
+  rclcpp::Publisher<std_msgs::msg::Float32MultiArray>::SharedPtr publisher2_;
+
+  std_msgs::msg::Float32MultiArray pressure;        
   size_t count_;
 };
 
